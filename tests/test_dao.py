@@ -1,6 +1,8 @@
-import src.dao as dao
+from src.dao import dao
 import pytest
 import pandas as pd
 
 def test_createConnectionEngine():
-    pass
+    databaseObject = dao("root", "root01", "192.168.1.53", "novaWareHouse")
+    print(databaseObject)
+    
