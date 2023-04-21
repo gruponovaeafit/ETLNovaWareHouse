@@ -1,4 +1,4 @@
-from trello.requestTrello import requestTrello
+from trello.request_trello import requestTrello
 from abc import ABC, abstractmethod
 from overrides import override
 

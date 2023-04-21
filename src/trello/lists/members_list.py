@@ -1,4 +1,4 @@
-from trello.lists.trelloObjectsList import trelloObjectsList
+from trello.lists.trello_objects_list import trelloObjectsList
 from trello.singles.member import member as trelloMember
 from overrides import override
 import requests

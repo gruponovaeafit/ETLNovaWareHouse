@@ -1,25 +1,34 @@
 #objeto trello card
 from overrides import override
-from trello.requestTrello import requestTrello
+from trello.request_trello import requestTrello
 import requests
 from datetime import datetime
 import pandas as pd
 
 
 class card(requestTrello):
-    def __init__(self,cardId:str):
+    def __init__(self,cardId:str, listId:str = None, membersId:list = None, 
+                 labelId:str= None, endDate:datetime=None, dateLastActivity:datetime=None):
         self.__cardId:str = cardId
-        self.__cardJson:dict = self.requestTrelloObjectJson()
-        self.__cardName:str = self.requestTrelloCardName()
-        self.__description = self.requestTrelloCardDescription()
-        self.__url:str = self.requestTrelloCardUrl()
-        self.__startDate:str = self.requestTrelloCardStartDate()
-        self.__listId:str = self.requestTrelloCardListId()
-        self.__boardId = self.requestTrelloCardBoardId()
-        self.__membersId:list = self.requestTrelloCardMembersId()
-        self.__labelId:str = self.requestTrelloCardLabelId()
-        self.__endDate:str = self.requestTrelloCardEndDate()
-        self.__dateLastActivity:str = self.requestTrelloCardDateLastActivity()
+        #si me dan datos de entrada para generar la card la genero
+        if None not in [listId, membersId, labelId, endDate, dateLastActivity]:
+            self.__listId = listId
+            self.__membersId = membersId
+            self.__labelId = labelId
+            self.__endDate = endDate
+            self.__dateLastActivity = dateLastActivity
+        else:    
+            self.__cardJson:dict = self.requestTrelloObjectJson()
+            self.__cardName:str = self.requestTrelloCardName()
+            self.__description:str = self.requestTrelloCardDescription()
+            self.__url:str = self.requestTrelloCardUrl()
+            self.__startDate:datetime = self.requestTrelloCardStartDate()
+            self.__listId:str = self.requestTrelloCardListId()
+            self.__boardId = self.requestTrelloCardBoardId()
+            self.__membersId:list = self.requestTrelloCardMembersId()
+            self.__labelId:str = self.requestTrelloCardLabelId()
+            self.__endDate:datetime = self.requestTrelloCardEndDate()
+            self.__dateLastActivity:datetime = self.requestTrelloCardDateLastActivity()
         
     
     @override

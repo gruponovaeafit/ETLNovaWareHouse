@@ -1,4 +1,4 @@
-from trello.lists.trelloObjectsList import trelloObjectsList
+from trello.lists.trello_objects_list import trelloObjectsList
 from trello.singles.label import label as trelloLabel
 from overrides import override
 import requests
