@@ -26,6 +26,7 @@ class dao:
     
     
     def insertToDataBase(self, df_insert:pd.DataFrame, dataBaseTableName:str) -> bool:
+        assert isinstance(df_insert, pd.DataFrame), "df_insert must be a DataFrame"
         #si lo que me retorna la funcion es un numero entero es que los datos fueron ingresados exitosamente
         if isinstance(df_insert.to_sql(dataBaseTableName, con=self.__connectionEngine, if_exists='append', index=False), int):
             return True 
