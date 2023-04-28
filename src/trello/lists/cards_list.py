@@ -1,5 +1,5 @@
 from trello.lists.trello_objects_list import trelloObjectsList
-from trello.singles.card import card as trelloCard
+from trello.singles.card import Card as trelloCard
 from overrides import override
 import requests
 import pandas as pd

@@ -1,5 +1,5 @@
 from trello.lists.trello_objects_list import trelloObjectsList
-from trello.singles.member import member as trelloMember
+from trello.singles.member import Member as trelloMember
 from overrides import override
 import requests
 import pandas as pd

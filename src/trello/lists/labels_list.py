@@ -1,5 +1,5 @@
 from trello.lists.trello_objects_list import trelloObjectsList
-from trello.singles.label import label as trelloLabel
+from trello.singles.label import Label as trelloLabel
 from overrides import override
 import requests
 import pandas as pd
