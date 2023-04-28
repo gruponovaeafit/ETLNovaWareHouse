@@ -1,11 +1,11 @@
 #objeto trello list
 from overrides import override
-from trello.requestTrello import requestTrello
+from trello.request_trello import requestTrello
 import requests
 import pandas as pd
 
 
-class list(requestTrello):
+class List(requestTrello):
     def __init__(self, listId:str):
         self.__listId = listId
         self.__listJson = self.requestTrelloObjectJson()

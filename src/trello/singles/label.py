@@ -1,9 +1,9 @@
-from trello.requestTrello import requestTrello
+from trello.request_trello import requestTrello
 from overrides import override
 import requests
 import pandas as pd
 
-class label(requestTrello):
+class Label(requestTrello):
     def __init__(self, labelId:str):
         self.__labelId = labelId
         self.__labelJson = self.requestTrelloObjectJson()

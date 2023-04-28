@@ -6,17 +6,16 @@ from datetime import datetime
 import pandas as pd
 
 
-class card(requestTrello):
+class Card(requestTrello):
     def __init__(self,cardId:str, listId:str = None, membersId:list = None, 
-                 labelId:str= None, endDate:datetime=None, dateLastActivity:datetime=None):
+                 labelId:str= None, endDate:datetime=None):
         self.__cardId:str = cardId
         #si me dan datos de entrada para generar la card la genero
-        if None not in [listId, membersId, labelId, endDate, dateLastActivity]:
+        if None not in [listId, membersId, labelId, endDate]:
             self.__listId = listId
             self.__membersId = membersId
             self.__labelId = labelId
             self.__endDate = endDate
-            self.__dateLastActivity = dateLastActivity
         else:    
             self.__cardJson:dict = self.requestTrelloObjectJson()
             self.__cardName:str = self.requestTrelloCardName()

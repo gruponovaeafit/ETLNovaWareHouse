@@ -1,10 +1,10 @@
-from trello.requestTrello import requestTrello
+from trello.request_trello import requestTrello
 from overrides import override
 import requests
 import pandas as pd
 
 
-class member(requestTrello):
+class Member(requestTrello):
     def __init__(self, memberId:str):
         self.__memberId:str = memberId
         self.__memberJson:dict = self.requestTrelloObjectJson()
