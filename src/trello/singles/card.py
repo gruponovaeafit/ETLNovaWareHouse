@@ -7,16 +7,11 @@ import pandas as pd
 
 
 class Card(requestTrello):
-    def __init__(self,cardId:str, listId:str = None, membersId:list = None, 
-                 labelId:str= None, endDate:datetime=None):
+    def __init__(self,cardId:str, listId:str = False, membersId:list = False, 
+                 labelId:str= False, startDate:datetime = False,endDate:datetime=False):
         self.__cardId:str = cardId
-        #si me dan datos de entrada para generar la card la genero
-        if None not in [listId, membersId, labelId, endDate]:
-            self.__listId = listId
-            self.__membersId = membersId
-            self.__labelId = labelId
-            self.__endDate = endDate
-        else:    
+        #si no me dan los atributos necesarios para generar la card le pido a trello la card
+        if any(attribute is False for attribute in [listId, membersId, labelId, startDate, endDate]):
             self.__cardJson:dict = self.requestTrelloObjectJson()
             self.__cardName:str = self.requestTrelloCardName()
             self.__description:str = self.requestTrelloCardDescription()
@@ -28,6 +23,12 @@ class Card(requestTrello):
             self.__labelId:str = self.requestTrelloCardLabelId()
             self.__endDate:datetime = self.requestTrelloCardEndDate()
             self.__dateLastActivity:datetime = self.requestTrelloCardDateLastActivity()
+        else:    
+            self.__listId = listId
+            self.__membersId = membersId
+            self.__labelId = labelId
+            self.__startDate = startDate
+            self.__endDate = endDate
         
     
     @override
@@ -122,9 +123,14 @@ class Card(requestTrello):
     def getEndDate(self) -> str:
         return self.__endDate
     
-    
+        
     def getDateLastAcitivity(self) -> str:
         return self.__dateLastActivity
+    
+    
+    def __gt__(self, otherCard):
+        #ordeno las tareas de mas vieja a mas nueva dependiendo de su fecha de inicio (creacion)  
+        return self.__startDate > otherCard.getStartDate()
     
     
     def __df__(self) -> pd.DataFrame:
