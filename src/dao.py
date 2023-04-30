@@ -3,7 +3,7 @@ import sqlalchemy as sa
 import pandas as pd
 
 
-class dao:
+class Dao:
     def __init__(self, userName, passwordUser, dbIp, dbName):
         self.__userName = userName
         self.__passwordUser = passwordUser
