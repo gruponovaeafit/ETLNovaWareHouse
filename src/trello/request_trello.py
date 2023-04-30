@@ -9,7 +9,7 @@ class requestTrello(ABC): #definicion de una clase abstracta
                 credentials = json.load(file)
             return credentials
         
-        credentials = openCredentialsFile("C:\\Users\\Admin\\Desktop\\ETL_novaWareHouse\\src\\trello\\credentials.json")
+        credentials = openCredentialsFile("C:\\Users\\Admin\\Desktop\\ETLNovaWareHouse\\src\\trello\\credentials.json")
         query = {
             "key":credentials["ApiKey"],
             "token":credentials["ApiToken"],
