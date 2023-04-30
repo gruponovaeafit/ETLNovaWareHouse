@@ -10,7 +10,7 @@ class cardsList(trelloObjectsList):
     def __init__(self, listsList:list):
         self.__listsList:list = listsList
         self.__cardsInListsJson = self.requestTrelloObjectJson()
-        self.__cardList:list = self.setCardsList()
+        self.__cardsList:list = self.setCardsList()
         self.checkListType()
         self.checkItemsInListTypes()
       
@@ -31,7 +31,7 @@ class cardsList(trelloObjectsList):
                 params=query
             )
             if trelloResponse.status_code != 200:
-                raise Exception(f"Error requesting trello cards list json for board id {self.__boardId}. Status code: {trelloResponse.status_code}")
+                raise Exception(f"Error requesting trello cards list json. Status code: {trelloResponse.status_code}")
             return trelloResponse.json()
         cardsInListJson = []
         for listId in self.__listsList:
@@ -40,23 +40,28 @@ class cardsList(trelloObjectsList):
      
         
     def setCardsList(self) -> list:
+        #retorna lista de cartas ordenadas de mas vieja a mas nueva
         cardsList = []
         for card in self.__cardsInListsJson:
             cardsList.append(
                 trelloCard(card["id"])
             )
-        return cardsList
+        return sorted(cardsList)
             
+    
+    def getCardsList(self) -> list:
+        return self.__cardsList
+    
     
     @override
     def checkListType(self):
-        assert isinstance(self.__cardList,list), "cardList must be type list"
+        assert isinstance(self.__cardsList,list), "cardList must be type list"
         return True
     
     
     @override
     def checkItemsInListTypes(self) -> bool:
-        for card in self.__cardList:
+        for card in self.__cardsList:
             if not isinstance(card, trelloCard):
                 raise Exception(f"all items in card list must be instances of card. card #{card} in list is type {type(card)}.")
         return True
