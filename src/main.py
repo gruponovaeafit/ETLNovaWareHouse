@@ -1,21 +1,57 @@
-#from trello.lists import cardsList, listsList, membersList, labelsList
+from comparator import Comparator
+from trello.lists import cards_list#, listsList, membersList, labelsList
 from trello.singles.card import Card
-from dao import dao
+from dao import Dao
 from datetime import datetime
 import pandas as pd
 
 if __name__ == '__main__':
-    c1 = Card(cardId='6434ec5be502e715cf661265', 
-                listId='63f02f3229c0bc3d8173158f',
-                membersId=['63f2ca4d791e17971239f926','63f2a578bb97677b68d2f8c7','5e4572c48caf2277dbfb0274','63fcd0afcce26c636b6bc425'],
-                labelId='63f0355e416bd7f1dd8a88fc',
-                endDate=datetime.strptime('2023-04-21 19:00:00','%Y-%m-%d %H:%M:%S'))
-    c2 = Card(cardId='6434ec5be502e715cf661265', 
-              listId='63f02f3229c0bc3d8173158f',
-              membersId=['63f2ca4d791e17971239f926','63f2a578bb97677b68d2f8c7','5e4572c48caf2277dbfb0274','63fcd0afcce26c636b6bc425'],
-              labelId='63f0355e416bd7f1dd8a88fc',
-              endDate=datetime.strptime('2023-04-21 19:00:00','%Y-%m-%d %H:%M:%S'))
-    print(c1.__dict__ == c2.__dict__)
+    
+    #obtener el id de las listas urgente, medio urgente y demas
+    dbListsId = dbConnection.queryToDataBase(
+        """SELECT * FROM EstadoTarea"""
+    )
+    
+    
+    #lista demas
+    
+    listDemasId = dbListsId["idEstadoTarea"][dbListsId["nombreEstadoTarea"] == "por realizar demas"] #saco Id de la lista demas
+    
+    
+    
+    dbTasksDemasList = dbConnection.queryToDataBase(
+        f"""SELECT idTarea, idEstadoTarea, idUrgencia, fechaInicio, fechaUltimaActividadTarea
+            FROM Tareas 
+            GROUP BY idTarea, idEstadoTarea, idUrgencia, fechaInicio, fechaUltimaActividadTarea
+            HAVING idEstadoTarea = \"{listDemasId.values[0]}\";"""
+    )   
+    
+    #creo la lista de cartas
+    dbTasksList = []
+    for i in range(0, len(dbTasksDemasList)):
+        taskId = dbTasksDemasList["idTarea"][i]
+        membersInTask = dbConnection.queryToDataBase(f"""SELECT idPersona FROM Tareas WHERE idTarea = \"{taskId}\";""").values
+        dbTasksList.append(Card(
+            cardId=taskId,
+            listId=dbTasksDemasList["idEstadoTarea"][i],
+            membersId=membersInTask,
+            labelId=dbTasksDemasList["idUrgencia"][i],
+            startDate=dbTasksDemasList["fechaInicio"][i],
+            endDate=dbTasksDemasList["fechaUltimaActividadTarea"][i]
+        ))
+    
+    dbTasksList = sorted(dbTasksList) #tareas de la base de datos ordenadas segun criterio
+    
+    trelloCardsList = cards_list.cardsList(listDemasId) #tareas de trello
+    trelloCards = trelloCardsList.getCardsList()
+    
+    
+    changes_count = 0
+    for i, dbCard in enumerate(dbTasksList):
+        if Comparator.compareCards(dbCard, trelloCards[i]) is False:
+            changes_count += 1
+    print(f"Changes detected: {changes_count}")
+            
     
 
 
