@@ -25,7 +25,7 @@ class Dao:
     
     
     def getpassWord4User(self) -> str:
-        return self.__dbCredentials["dbPassWord"]
+        return self.__dbCredentials["dbPassword"]
     
     
     def getDbIp(self) -> str:
