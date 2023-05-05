@@ -7,11 +7,10 @@ import pandas as pd
 
 
 class Card(requestTrello):
-    def __init__(self,cardId:str, listId:str = False, membersId:list = False, 
-                 labelId:str= False, startDate:datetime = False,endDate:datetime=False):
+    def __init__(self,cardId:str, cardName:str = False, listId:str = False, labelId:str= False):
         self.__cardId:str = cardId
         #si no me dan los atributos necesarios para generar la card le pido a trello la card
-        if any(attribute is False for attribute in [listId, membersId, labelId, startDate, endDate]):
+        if any(attribute is False for attribute in [listId, cardName, labelId]):
             self.__cardJson:dict = self.requestTrelloObjectJson()
             self.__cardName:str = self.requestTrelloCardName()
             self.__description:str = self.requestTrelloCardDescription()
@@ -24,11 +23,9 @@ class Card(requestTrello):
             self.__endDate:datetime = self.requestTrelloCardEndDate()
             self.__dateLastActivity:datetime = self.requestTrelloCardDateLastActivity()
         else:    
+            self.__cardName = cardName
             self.__listId = listId
-            self.__membersId = membersId
             self.__labelId = labelId
-            self.__startDate = startDate
-            self.__endDate = endDate
         
     
     @override
@@ -82,14 +79,14 @@ class Card(requestTrello):
         return self.__cardJson["idLabels"][0]
     
     
-    def requestTrelloCardEndDate(self) -> datetime:
+    def requestTrelloCardEndDate(self) -> pd.Timestamp:
         if isinstance(self.__cardJson["due"],str):
-            return datetime.strptime(self.__cardJson["due"],'%Y-%m-%dT%H:%M:%S.%fZ')
+            return pd.to_datetime(self.__cardJson["due"])
         return None
     
     
-    def requestTrelloCardDateLastActivity(self) -> datetime:
-        return datetime.strptime(self.__cardJson["dateLastActivity"],'%Y-%m-%dT%H:%M:%S.%fZ')
+    def requestTrelloCardDateLastActivity(self) -> pd.Timestamp:
+        return pd.to_datetime(self.__cardJson["dateLastActivity"])
     
     
     def getCardId(self) -> str:
@@ -128,9 +125,15 @@ class Card(requestTrello):
         return self.__dateLastActivity
     
     
-    def __gt__(self, otherCard):
-        #ordeno las tareas de mas vieja a mas nueva dependiendo de su fecha de inicio (creacion)  
-        return self.__startDate > otherCard.getStartDate()
+    def getDict(self) -> dict:
+        return {
+            'cardId':self.__cardId,
+            'cardName':self.__cardName,
+            'labelId':self.__labelId,
+            'membersId':self.__membersId,
+            'listId':self.__listId,
+            'endDate':self.__endDate
+        }
     
     
     def __df__(self) -> pd.DataFrame:
@@ -154,6 +157,8 @@ class Card(requestTrello):
                        'descripcionTarea', 'fechaInicio', 'fechaFin', 'urlTarea', 'fechaUltimaActividadTarea'],
             data = data
         )
+        
+    
             
             
         
