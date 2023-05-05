@@ -7,13 +7,19 @@ import pandas as pd
 #coregir para obtener tarjetas de unas listas determinadas
 
 class cardsList(trelloObjectsList):
-    def __init__(self, listsList:list):
-        self.__listsList:list = listsList
-        self.__cardsInListsJson = self.requestTrelloObjectJson()
-        self.__cardsList:list = self.setCardsList()
-        self.checkListType()
-        self.checkItemsInListTypes()
-      
+    
+    def __init__(self, cardsList:list=False, listsList:list=False):
+        if cardsList is not False:
+            self.__cardsList = cardsList
+        else:
+            assert isinstance(listsList, list), "listsList must be a list"
+            assert len(listsList) > 0, "listsList must have at least one element"
+            self.__listsList:list = listsList
+            self.__cardsInListsJson = self.requestTrelloObjectJson()
+            self.__cardsList:list = self.setCardsList()
+            self.checkListType()
+            self.checkItemsInListTypes()
+    
             
     @override
     def requestTrelloObjectJson(self) -> list:
@@ -39,14 +45,16 @@ class cardsList(trelloObjectsList):
         return cardsInListJson
      
         
-    def setCardsList(self) -> list:
+    def setCardsList(self, newCardsList:list = False) -> list:
         #retorna lista de cartas ordenadas de mas vieja a mas nueva
-        cardsList = []
-        for card in self.__cardsInListsJson:
-            cardsList.append(
-                trelloCard(card["id"])
-            )
-        return cardsList
+        if newCardsList is False:
+            cardsList = []
+            for card in self.__cardsInListsJson:
+                cardsList.append(
+                    trelloCard(card["id"])
+                )
+            return cardsList
+        self.__cardsList = newCardsList
             
     
     def getCardsList(self) -> list:
@@ -70,7 +78,7 @@ class cardsList(trelloObjectsList):
     @override
     def __df__(self):
         returnDf = pd.DataFrame()
-        for card in self.__cardList:
+        for card in self.__cardsList:
             returnDf = pd.concat([returnDf,card.__df__()])
         return returnDf
     
