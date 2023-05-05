@@ -1,18 +1,38 @@
 #objecto DAO (Database Access Object)
+from credentials import openCredentialsFile
 import sqlalchemy as sa
 import pandas as pd
 
 
 class Dao:
-    def __init__(self, userName, passwordUser, dbIp, dbName):
-        self.__userName = userName
-        self.__passwordUser = passwordUser
-        self.__dbIp = dbIp
+    def __init__(self, dbName, userName=False, passwordUser=False, dbIp=False):
         self.__dbName = dbName
-        self.__connectionEngine = self.createConnectionEngine() #crear connexion con base de datos desde el constructor
+        #si no me dan los atributos necesarios para generar la card le pido a trello la card
+        if any(attribute is False for attribute in [userName, passwordUser, dbIp]):
+            self.__dbCredentials = openCredentialsFile("C:\\Users\\Admin\\Desktop\\ETLNovaWareHouse\\src\\credentials.json")
+            self.__userName = self.getDbUserName()
+            self.__passwordUser = self.getpassWord4User()
+            self.__dbIp = self.getDbIp()
+            self.__connectionEngine = self.createConnectionEngine() #crear connexion con base de datos desde el constructor
+        else:
+            self.__userName = userName
+            self.__passwordUser = passwordUser
+            self.__dbIp = dbIp
     
     
-    def createConnectionEngine(self) -> sa.engine.base.Engine:
+    def getDbUserName(self) -> str:
+        return self.__dbCredentials["dbUserName"]
+    
+    
+    def getpassWord4User(self) -> str:
+        return self.__dbCredentials["dbPassWord"]
+    
+    
+    def getDbIp(self) -> str:
+        return self.__dbCredentials["dbIp"]
+    
+        
+    def createConnectionEngine(self) -> str:
         connectionEngine = sa.create_engine(
             #estructura string de conexion: mysql+pymysql://{user}:{pw}@{db_ip}/{db_name}
             f"mysql+pymysql://{self.__userName}:{self.__passwordUser}@{self.__dbIp}/{self.__dbName}"
@@ -21,7 +41,7 @@ class Dao:
     
     
     def queryToDataBase(self, query:str) -> pd.DataFrame:
-        df_query = pd.read_sql_query(query, con=self.__connectionEngine) #creo un dataframe con los datos retornados por la base de datos
+        df_query:pd.DataFrame = pd.read_sql_query(query, con=self.__connectionEngine) #creo un dataframe con los datos retornados por la base de datos
         return df_query
     
     
