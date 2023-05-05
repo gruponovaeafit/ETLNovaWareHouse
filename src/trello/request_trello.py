@@ -1,18 +1,13 @@
+from credentials import openCredentialsFile
 from abc import ABC, abstractmethod
-import json
 
 class requestTrello(ABC): #definicion de una clase abstracta
     
-    def getTrelloApiCredentials() -> dict:
-        def openCredentialsFile(filePath):
-            with open(filePath) as file:
-                credentials = json.load(file)
-            return credentials
-        
-        credentials = openCredentialsFile("C:\\Users\\Admin\\Desktop\\ETLNovaWareHouse\\src\\trello\\credentials.json")
+    def getTrelloApiCredentials() -> dict:        
+        trelloCredentials = openCredentialsFile("C:\\Users\\Admin\\Desktop\\ETLNovaWareHouse\\src\\credentials.json")
         query = {
-            "key":credentials["ApiKey"],
-            "token":credentials["ApiToken"],
+            "key":trelloCredentials["ApiKey"],
+            "token":trelloCredentials["ApiToken"],
         }
         return query
     
