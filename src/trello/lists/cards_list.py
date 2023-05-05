@@ -46,7 +46,7 @@ class cardsList(trelloObjectsList):
             cardsList.append(
                 trelloCard(card["id"])
             )
-        return sorted(cardsList)
+        return cardsList
             
     
     def getCardsList(self) -> list:
