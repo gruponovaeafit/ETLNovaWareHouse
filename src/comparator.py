@@ -15,7 +15,7 @@ def notifyChanges(missingCardsIdsInDb:list) -> str:
     message = "Here is the list of changes to resolve.\nAdd(+)\n"
     card:Card
     for i,card in enumerate(missingCardsIdsInDb):
-        message += f"{i}. {card.getCardName()}\n"
+        message += f"{card.__df__()}\n"
     return message
     
         
